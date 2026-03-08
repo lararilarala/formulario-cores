@@ -28,9 +28,9 @@ app.get('/api/choices', (req, res) => {
 
 app.post('/api/choose', (req, res) => {
   const { name, email, hex } = req.body;
-  if (!name || !email || !hex) return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
+  if (!name || !email || !hex) return res.status(400).json({ error: 'Campos obrigatorios ausentes.' });
   const choices = loadChoices();
-  if (choices[hex]) return res.status(409).json({ error: 'Cor já escolhida.' });
+  if (choices[hex]) return res.status(409).json({ error: 'Cor ja escolhida.' });
   choices[hex] = { name, email, time: new Date().toISOString() };
   saveChoices(choices);
   res.json({ ok: true });
@@ -42,4 +42,11 @@ app.post('/api/admin', (req, res) => {
   res.json({ choices: loadChoices() });
 });
 
-app.post('/api/rese
+app.post('/api/reset', (req, res) => {
+  const { password } = req.body;
+  if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Senha incorreta.' });
+  saveChoices({});
+  res.json({ ok: true });
+});
+
+app.listen(PORT, () => console.log('Servidor rodando na porta ' + PORT));
