@@ -1,0 +1,12 @@
+{
+  "name": "formulario-cores",
+  "version": "1.0.0",
+  "description": "Formulário de escolha de cores",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
