@@ -1,5 +1,5 @@
 const express = require('express');
-const fetch = require('node-fetch');
+const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = 'admin123';
@@ -8,11 +8,22 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBSaVYiDyEpmtfLzKLC
 app.use(express.json());
 app.use(express.static('public'));
 
-async function callScript(params) {
-  const url = new URL(SCRIPT_URL);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.append(k, v));
-  const res = await fetch(url.toString(), { redirect: 'follow' });
-  return res.json();
+function callScript(params) {
+  return new Promise((resolve, reject) => {
+    const query = Object.entries(params).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+    const makeRequest = (url) => {
+      https.get(url, (res) => {
+        if (res.statusCode === 301 || res.statusCode === 302) {
+          makeRequest(res.headers.location);
+          return;
+        }
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => { try { resolve(JSON.parse(data)); } catch(e) { reject(e); } });
+      }).on('error', reject);
+    };
+    makeRequest(`${SCRIPT_URL}?${query}`);
+  });
 }
 
 app.get('/api/choices', async (req, res) => {
@@ -51,7 +62,7 @@ app.post('/api/admin', async (req, res) => {
   }
 });
 
-app.post('/api/reset', async (req, res) => {
+app.post('/api/reset', (req, res) => {
   const { password } = req.body;
   if (password !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Senha incorreta.' });
   res.status(403).json({ error: 'Reset deve ser feito diretamente no Google Sheets.' });
