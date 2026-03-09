@@ -3,7 +3,7 @@ const https = require('https');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = 'admin123';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwBSaVYiDyEpmtfLzKLCpPQpzZ-C4Sg2jYCxG1nvQlWWXUL1YDKrQqjulj7kK7V0OjO/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2xvlqb4PdeEQ0Iwut2pfVdvcoDOU2eHpc6H-BkunUmZ62rJHygetCOH85MUKrQnVr/exec';
 
 app.use(express.json());
 app.use(express.static('public'));
