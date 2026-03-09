@@ -3,101 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Em breve</title>
+<title>Escolha sua Cor</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
+:root { --bg:#ffffff; --surface:#f5f5f5; --border:#e0e0e0; --text:#111111; --muted:#666; --radius:12px; }
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background:#ffffff;
-  font-family:'DM Mono', monospace;
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:40px 20px;
-}
-.stripe {
-  position:fixed;
-  top:0; left:0; right:0;
-  height:4px;
-  background:linear-gradient(90deg,#D30B8F,#8AC6E6,#7B0479,#B85C38,#E93D3E,#9D673E,#536DBC,#E056A2,#FEC101,#1A0A2E,#00897B,#FF6B35,#B388FF,#263859,#C62828,#80CBC4,#4A148C,#F8BBD0,#A7F06C,#EF0A80,#E9FF70,#FF9EF5,#AACC00,#00F5D4,#3AC1FF,#C0392B,#DDA15E,#A0522D,#4E342E,#FF6B6B,#1565C0,#F5E642);
-}
-.content {
-  text-align:center;
-  max-width:480px;
-}
-.label {
-  font-size:0.58rem;
-  letter-spacing:0.25em;
-  text-transform:uppercase;
-  color:#ccc;
-  margin-bottom:28px;
-}
-h1 {
-  font-family:'DM Serif Display', serif;
-  font-size:clamp(2.4rem,6vw,3.6rem);
-  line-height:1.1;
-  letter-spacing:-0.02em;
-  color:#111;
-  margin-bottom:24px;
-}
-h1 em { font-style:italic; opacity:0.35; }
-.msg {
-  font-size:0.78rem;
-  color:#888;
-  line-height:1.8;
-  margin-bottom:40px;
-}
-.time {
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  background:#f5f5f5;
-  border:1px solid #e8e8e8;
-  border-radius:100px;
-  padding:10px 22px;
-  font-size:0.65rem;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:#555;
-}
-.dot {
-  width:7px; height:7px;
-  border-radius:50%;
-  background:#FEC101;
-  animation:pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-  0%,100% { opacity:1; transform:scale(1); }
-  50% { opacity:0.4; transform:scale(0.7); }
-}
-.bottom {
-  position:fixed;
-  bottom:28px;
-  font-size:0.52rem;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:#ddd;
-}
+body { background:var(--bg); color:var(--text); font-family:'DM Mono',monospace; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:48px 20px 80px; }
+.container { width:100%; max-width:720px; }
+.header { margin-bottom:40px; }
+.header-label { font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+h1 { font-family:'DM Serif Display',serif; font-size:clamp(2rem,5vw,3rem); line-height:1.1; letter-spacing:-0.02em; }
+h1 em { font-style:italic; opacity:0.45; }
+.stripe { height:3px; margin:18px 0 14px; border-radius:2px; background:linear-gradient(90deg,#D30B8F,#8AC6E6,#7B0479,#B85C38,#E93D3E,#9D673E,#536DBC,#E056A2,#FEC101,#1A0A2E,#00897B,#FF6B35,#B388FF,#263859,#C62828,#80CBC4,#4A148C,#F8BBD0,#A7F06C,#EF0A80,#E9FF70,#FF9EF5,#AACC00,#00F5D4,#3AC1FF,#C0392B,#DDA15E,#A0522D,#4E342E,#FF6B6B,#1565C0,#F5E642); }
+.header-sub { font-size:0.72rem; color:var(--muted); }
+.view { display:none; animation:fadeIn 0.4s ease; }
+.view.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+.field { margin-bottom:20px; }
+.field label { display:block; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.field input { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; color:var(--text); font-family:'DM Mono',monospace; font-size:0.85rem; outline:none; transition:border-color 0.2s; }
+.field input:focus { border-color:#aaa; }
+.field input::placeholder { color:#bbb; }
+.colors-label { font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; margin-top:28px; }
+.color-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:28px; }
+.color-option { border-radius:10px; overflow:hidden; border:2px solid transparent; cursor:pointer; transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s; position:relative; }
+.color-option:hover:not(.taken) { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+.color-option.selected { border-color:#111; transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+.color-option.taken { opacity:0.2; cursor:not-allowed; filter:grayscale(0.5); }
+.color-swatch { height:64px; width:100%; }
+.color-name { background:var(--surface); padding:6px 8px; font-size:0.58rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-top:1px solid var(--border); }
+.taken-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.1rem; background:rgba(255,255,255,0.4); }
+.check-icon { position:absolute; top:6px; right:6px; width:20px; height:20px; background:#111; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; opacity:0; transition:opacity 0.2s; }
+.color-option.selected .check-icon { opacity:1; }
+.btn { width:100%; padding:16px; border:none; border-radius:var(--radius); font-family:'DM Mono',monospace; font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:opacity 0.2s,transform 0.15s; }
+.btn:hover { opacity:0.88; transform:translateY(-1px); }
+.btn-primary { background:#111; color:#fff; }
+.btn-secondary { background:transparent; border:1px solid var(--border); color:var(--muted); margin-top:10px; }
+.btn:disabled { opacity:0.3; cursor:not-allowed; transform:none; }
+.success-color { width:100%; height:160px; border-radius:var(--radius); margin-bottom:24px; display:flex; align-items:flex-end; padding:16px; }
+.success-hex { font-size:1.5rem; font-family:'DM Serif Display',serif; font-style:italic; }
+.success-msg { font-size:0.8rem; color:var(--muted); line-height:1.6; margin-top:8px; }
+.esgotado-icon { font-size:3rem; margin-bottom:20px; }
+.esgotado-title { font-family:'DM Serif Display',serif; font-size:2rem; margin-bottom:12px; }
+.esgotado-msg { font-size:0.8rem; color:var(--muted); line-height:1.6; }
+.loading { display:flex; align-items:center; gap:10px; color:var(--muted); font-size:0.75rem; padding:40px 0; }
+.spinner { width:18px; height:18px; border:2px solid var(--border); border-top-color:#aaa; border-radius:50%; animation:spin 0.8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.admin-bar { position:fixed; bottom:20px; right:20px; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; padding:8px 14px; border:1px solid var(--border); border-radius:100px; background:var(--bg); transition:color 0.2s,border-color 0.2s; }
+.admin-bar:hover { color:var(--text); border-color:#aaa; }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center; z-index:100; padding:20px; }
+.modal-overlay.open { display:flex; animation:fadeIn 0.2s ease; }
+.modal { background:#fff; border:1px solid var(--border); border-radius:16px; padding:32px; width:100%; max-width:480px; max-height:85vh; overflow-y:auto; }
+.modal h2 { font-family:'DM Serif Display',serif; font-size:1.6rem; margin-bottom:6px; }
+.modal-sub { font-size:0.68rem; color:var(--muted); margin-bottom:24px; }
+.admin-stats { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:24px; }
+.stat-box { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+.stat-number { font-family:'DM Serif Display',serif; font-size:1.8rem; display:block; }
+.stat-label { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+.admin-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+.admin-entry { display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
+.entry-color { width:32px; height:32px; border-radius:6px; flex-shrink:0; }
+.entry-info { flex:1; min-width:0; }
+.entry-name { font-size:0.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.entry-email { font-size:0.62rem; color:var(--muted); }
+.entry-color-name { font-size:0.62rem; color:var(--muted); margin-top:2px; }
+.entry-time { font-size:0.58rem; color:var(--muted); white-space:nowrap; }
+.available-title { font-size:0.62rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.available-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+.chip { display:flex; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:4px 10px 4px 6px; font-size:0.6rem; color:var(--muted); }
+.chip-dot { width:10px; height:10px; border-radius:50%; }
+.error-msg { background:#fff0f0; border:1px solid #ffcccc; border-radius:8px; padding:10px 14px; font-size:0.72rem; color:#cc0000; margin-bottom:16px; display:none; }
+.error-msg.show { display:block; }
 </style>
 </head>
 <body>
-<div class="stripe"></div>
-
-<div class="content">
-  <p class="label">Formulário de seleção</p>
-  <h1>Em<br><em>ajuste</em></h1>
-  <p class="msg">
-    formulário em arrumação
-  
-  </p>
-  <div class="time">
-    <div class="dot"></div>
-    Volte amanhã cedo
+<div class="container">
+  <div class="header">
+    <p class="header-label">Formulário de seleção</p>
+    <h1>Escolha sua<br><em>cor</em></h1>
+    <div class="stripe"></div>
+    <p class="header-sub" id="available-count">Carregando…</p>
+  </div>
+  <div class="view active" id="view-loading">
+    <div class="loading"><div class="spinner"></div> Carregando paleta…</div>
+  </div>
+  <div class="view" id="view-form">
+    <div class="field"><label>Seu nome</label><input type="text" id="input-name" placeholder="Como você se chama?" autocomplete="off"></div>
+    <div class="field"><label>Seu e-mail</label><input type="email" id="input-email" placeholder="seu@email.com" autocomplete="off"></div>
+    <p class="colors-label">Escolha uma cor — cada cor só pode ser escolhida uma vez</p>
+    <div class="color-grid" id="color-grid"></div>
+    <div class="error-msg" id="form-error">Por favor, preencha todos os campos e selecione uma cor.</div>
+    <button class="btn btn-primary" id="btn-submit">Confirmar escolha</button>
+  </div>
+  <div class="view" id="view-success">
+    <div class="success-color" id="success-color"><span class="success-hex" id="success-hex"></span></div>
+    <div style="margin-bottom:8px;font-family:'DM Serif Display',serif;font-size:1.4rem;" id="success-name-display"></div>
+    <p class="success-msg" id="success-msg"></p>
+  </div>
+  <div class="view" id="view-esgotado">
+    <div class="esgotado-icon">🎨</div>
+    <div class="esgotado-title">Paleta esgotada</div>
+    <p class="esgotado-msg">Todas as 32 cores já foram escolhidas. Obrigado pela participação de todos!</p>
   </div>
 </div>
+<div class="admin-bar" id="admin-btn">⚙ admin</div>
+<div class="modal-overlay" id="admin-modal">
+  <div class="modal">
+    <h2>Painel Admin</h2>
+    <p class="modal-sub">Visão geral das escolhas</p>
+    <div id="admin-login">
+      <div class="field"><label>Senha de acesso</label><input type="password" id="admin-password" placeholder="••••••••"></div>
+      <div class="error-msg" id="admin-error">Senha incorreta.</div>
+      <button class="btn btn-primary" id="btn-admin-login">Entrar</button>
+      <button class="btn btn-secondary" id="btn-close-modal">Cancelar</button>
+    </div>
+    <div id="admin-dashboard" style="display:none">
+      <div class="admin-stats">
+        <div class="stat-box"><span class="stat-number" id="stat-chosen">0</span><span class="stat-label">Escolhidas</span></div>
+        <div class="stat-box"><span class="stat-number" id="stat-available">0</span><span class="stat-label">Disponíveis</span></div>
+        <div class="stat-box"><span class="stat-number">32</span><span class="stat-label">Total</span></div>
+      </div>
+      <p class="available-title">Cores ainda disponíveis</p>
+      <div class="available-chips" id="available-chips"></div>
+      <p class="available-title">Escolhas realizadas</p>
+      <div class="admin-list" id="admin-list"></div>
+      <button class="btn btn-secondary" style="margin-top:8px" id="btn-close-dashboard">Fechar</button>
+    </div>
+  </div>
+</div>
+<script>
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbwBSaVYiDyEpmtfLzKLCpPQpzZ-C4Sg2jYCxG1nvQlWWXUL1YDKrQqjulj7kK7V0OjO/exec';
+const ADMIN_PASSWORD='admin123';
+const COLORS=[
+  {hex:"#D30B8F",name:"Magenta Pride"},
+  {hex:"#8AC6E6",name:"Azul Céu"},
+  {hex:"#7B0479",name:"Púrpura"},
+  {hex:"#B85C38",name:"Telha"},
+  {hex:"#E93D3E",name:"Coral Vivo"},
+  {hex:"#9D673E",name:"Terra Marrom"},
+  {hex:"#536DBC",name:"Azul Médio"},
+  {hex:"#E056A2",name:"Rosa Trans"},
+  {hex:"#FEC101",name:"Amarelo Solar"},
+  {hex:"#1A0A2E",name:"Noite Profunda"},
+  {hex:"#00897B",name:"Verde Jade"},
+  {hex:"#FF6B35",name:"Tangerina"},
+  {hex:"#B388FF",name:"Lilás Elétrico"},
+  {hex:"#263859",name:"Azul Noite"},
+  {hex:"#C62828",name:"Vermelho Escuro"},
+  {hex:"#80CBC4",name:"Água Suave"},
+  {hex:"#4A148C",name:"Violeta Noite"},
+  {hex:"#F8BBD0",name:"Rosa Névoa"},
+  {hex:"#A7F06C",name:"Verde Lima Claro"},
+  {hex:"#EF0A80",name:"Rosa Néon"},
+  {hex:"#E9FF70",name:"Lima Suave"},
+  {hex:"#FF9EF5",name:"Lilás Néon"},
+  {hex:"#AACC00",name:"Verde Ácido"},
+  {hex:"#00F5D4",name:"Néon Turquesa"},
+  {hex:"#3AC1FF",name:"Ciano Elétrico"},
+  {hex:"#C0392B",name:"Tijolo Vivo"},
+  {hex:"#DDA15E",name:"Areia Quente"},
+  {hex:"#A0522D",name:"Sienna"},
+  {hex:"#4E342E",name:"Marrom Profundo"},
+  {hex:"#FF6B6B",name:"Salmão Vivo"},
+  {hex:"#1565C0",name:"Azul Royal"},
+  {hex:"#F5E642",name:"Amarelo Vivo"}
+];
+const TOTAL=COLORS.length;
+let selectedHex=null;
 
-<p class="bottom">em breve · 32 cores · 22 vozes</p>
+function call(data){
+  return fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify(data)}).then(r=>r.json());
+}
+function lum(h){const r=parseInt(h.slice(1,3),16)/255,g=parseInt(h.slice(3,5),16)/255,b=parseInt(h.slice(5,7),16)/255;return 0.2126*r+0.7152*g+0.0722*b;}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function updateCount(n){const l=TOTAL-n;document.getElementById('available-count').textContent=l===0?'Todas as cores foram escolhidas.':`${l} cor${l!==1?'es':''} disponíve${l!==1?'is':'l'} de ${TOTAL}`;}
+
+function renderGrid(taken){
+  const g=document.getElementById('color-grid');g.innerHTML='';
+  COLORS.forEach(c=>{
+    const t=taken.includes(c.hex);
+    const d=document.createElement('div');
+    d.className='color-option'+(t?' taken':'');
+    d.innerHTML=`<div class="color-swatch" style="background:${c.hex}"></div><div class="check-icon">✓</div>${t?'<div class="taken-overlay">✕</div>':''}<div class="color-name">${c.name}</div>`;
+    if(!t)d.addEventListener('click',()=>{document.querySelectorAll('.color-option').forEach(o=>o.classList.remove('selected'));d.classList.add('selected');selectedHex=c.hex;});
+    g.appendChild(d);
+  });
+}
+
+async function loadState(){
+  try{
+    const data=await call({action:'getChoices'});
+    const taken=data.taken||[];
+    updateCount(taken.length);
+    if(taken.length>=TOTAL){showView('view-esgotado');}
+    else{renderGrid(taken);showView('view-form');}
+  }catch(e){renderGrid([]);showView('view-form');}
+}
+
+document.getElementById('btn-submit').addEventListener('click',async()=>{
+  const nome=document.getElementById('input-name').value.trim();
+  const email=document.getElementById('input-email').value.trim();
+  const err=document.getElementById('form-error');
+  if(!nome||!email||!selectedHex){err.classList.add('show');return;}
+  err.classList.remove('show');
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;btn.textContent='Enviando…';
+  try{
+    const res=await call({action:'choose',hex:selectedHex,nome,email});
+    if(res.error==='taken'){
+      alert('Esta cor acabou de ser escolhida! Selecione outra.');
+      await loadState();selectedHex=null;
+      btn.disabled=false;btn.textContent='Confirmar escolha';
+      return;
+    }
+    const color=COLORS.find(c=>c.hex===selectedHex);
+    const tc=lum(selectedHex)>0.35?'#111':'#fff';
+    document.getElementById('success-color').style.background=selectedHex;
+    document.getElementById('success-hex').style.color=tc;
+    document.getElementById('success-hex').textContent=color.name;
+    document.getElementById('success-name-display').textContent=`Perfeito, ${nome}!`;
+    document.getElementById('success-msg').textContent=`Você escolheu ${color.name} (${selectedHex}). Sua escolha foi registrada!`;
+    showView('view-success');
+  }catch(e){
+    alert('Erro ao enviar. Tente novamente.');
+    btn.disabled=false;btn.textContent='Confirmar escolha';
+  }
+});
+
+document.getElementById('admin-btn').addEventListener('click',()=>{
+  document.getElementById('admin-modal').classList.add('open');
+  document.getElementById('admin-login').style.display='block';
+  document.getElementById('admin-dashboard').style.display='none';
+  document.getElementById('admin-password').value='';
+  document.getElementById('admin-error').classList.remove('show');
+});
+document.getElementById('btn-close-modal').addEventListener('click',()=>document.getElementById('admin-modal').classList.remove('open'));
+document.getElementById('btn-close-dashboard').addEventListener('click',()=>document.getElementById('admin-modal').classList.remove('open'));
+document.getElementById('admin-password').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('btn-admin-login').click();});
+
+document.getElementById('btn-admin-login').addEventListener('click',async()=>{
+  const pw=document.getElementById('admin-password').value;
+  if(pw!==ADMIN_PASSWORD){document.getElementById('admin-error').classList.add('show');return;}
+  try{
+    const data=await call({action:'getChoices'});
+    const taken=data.taken||[];
+    const entries=data.entries||[];
+    document.getElementById('stat-chosen').textContent=taken.length;
+    document.getElementById('stat-available').textContent=TOTAL-taken.length;
+    const chips=document.getElementById('available-chips');
+    chips.innerHTML='';
+    COLORS.filter(c=>!taken.includes(c.hex)).forEach(c=>{
+      const ch=document.createElement('div');ch.className='chip';
+      ch.innerHTML=`<div class="chip-dot" style="background:${c.hex}"></div>${c.name}`;
+      chips.appendChild(ch);
+    });
+    if(!chips.children.length)chips.innerHTML='<span style="font-size:0.68rem;color:var(--muted)">Nenhuma disponível.</span>';
+    const list=document.getElementById('admin-list');
+    if(!entries.length){list.innerHTML='<p style="font-size:0.72rem;color:var(--muted)">Nenhuma escolha ainda.</p>';}
+    else{
+      list.innerHTML='';
+      entries.forEach(row=>{
+        const color=COLORS.find(c=>c.hex===row.hex);
+        const e=document.createElement('div');e.className='admin-entry';
+        e.innerHTML=`<div class="entry-color" style="background:${row.hex}"></div><div class="entry-info"><div class="entry-name">${row.nome}</div><div class="entry-email">${row.email}</div><div class="entry-color-name">${color?color.name:row.hex} · ${row.hex}</div></div><div class="entry-time">${row.horario}</div>`;
+        list.appendChild(e);
+      });
+    }
+    document.getElementById('admin-error').classList.remove('show');
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-dashboard').style.display='block';
+  }catch(e){document.getElementById('admin-error').classList.add('show');}
+});
+
+loadState();
+</script>
 </body>
 </html>
